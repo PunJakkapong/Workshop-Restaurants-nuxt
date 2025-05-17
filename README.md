@@ -3,7 +3,7 @@ For run on workshop project
 create file .env by copy from .env.example
 set API_BASE_URL as your Workshop-Restaurants-api server ip (default: http://127.0.0.1:8000/api)
 ```bash
-API_BASE_URL=http://127.0.0.1:8000/ap
+API_BASE_URL=http://127.0.0.1:8000/api
 ```
 then
 ```bash
