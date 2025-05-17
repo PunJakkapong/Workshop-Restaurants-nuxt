@@ -285,7 +285,7 @@ const scrollToTop = () => {
 
 .search-panel {
   position: sticky;
-  top: 20px;
+  top: 0;
   z-index: 1000;
   background: white;
   transition: all 0.3s ease;
