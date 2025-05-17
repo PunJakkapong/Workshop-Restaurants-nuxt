@@ -2,7 +2,12 @@
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-12 col-lg-10">
-        <h1 class="text-center mb-5">Restaurants</h1>
+        <div class="title-wrapper">
+          <h1 class="modern-title">
+            <span class="title-icon">🍽️</span>
+            <span class="title-text">Restaurants</span>
+          </h1>
+        </div>
 
         <!-- Search Form -->
         <div class="card shadow-sm mb-5 search-panel">
@@ -253,6 +258,31 @@ const scrollToTop = () => {
 </script>
 
 <style scoped>
+.title-wrapper {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.modern-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.title-icon {
+  font-size: 1.5rem;
+}
+
+.title-text {
+  background: linear-gradient(45deg, #2196f3, #1976d2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .search-panel {
   position: sticky;
   top: 20px;
