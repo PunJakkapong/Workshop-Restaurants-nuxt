@@ -91,7 +91,10 @@
         </div>
 
         <!-- Loading State -->
-        <div v-if="loading" class="text-center py-5">
+        <div
+          v-if="loading && restaurants.length === 0"
+          class="text-center py-5"
+        >
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
@@ -171,6 +174,17 @@
           </div>
         </div>
 
+        <!-- Loading More Indicator -->
+        <div v-if="loading && restaurants.length > 0" class="text-center py-4">
+          <div
+            class="spinner-border spinner-border-sm text-primary"
+            role="status"
+          >
+            <span class="visually-hidden">Loading more...</span>
+          </div>
+          <p class="mt-2 text-muted small">Loading more restaurants...</p>
+        </div>
+
         <!-- Empty State -->
         <div
           v-if="!loading && !error && restaurants.length === 0"
@@ -209,8 +223,15 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRestaurants } from "../composables/useRestaurants";
 
-const { restaurants, loading, error, fetchRestaurants, getPhotoUrl } =
-  useRestaurants();
+const {
+  restaurants,
+  loading,
+  error,
+  hasMore,
+  fetchRestaurants,
+  loadMore,
+  getPhotoUrl,
+} = useRestaurants();
 const searchKeyword = ref("Bang sue");
 const searchAddress = ref("");
 const showScrollTop = ref(false);
@@ -225,6 +246,16 @@ const scrollToTop = () => {
 
 const handleScroll = () => {
   showScrollTop.value = window.scrollY > 300;
+
+  // Check if we need to load more restaurants
+  if (hasMore.value && !loading.value) {
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.documentElement.scrollHeight - 1000; // Load more when 1000px from bottom
+
+    if (scrollPosition >= threshold) {
+      loadMore();
+    }
+  }
 };
 
 onMounted(() => {
