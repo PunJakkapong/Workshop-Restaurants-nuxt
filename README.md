@@ -1,9 +1,9 @@
 For run on workshop project
 
 create file .env by copy from .env.example
-set GOOGLE_MAPS_API_KEY as your google maps api key
+set API_BASE_URL as your Workshop-Restaurants-api server ip (default: http://127.0.0.1:8000/api)
 ```bash
-GOOGLE_MAPS_API_KEY={your_google_maps_api_key}
+API_BASE_URL=http://127.0.0.1:8000/ap
 ```
 then
 ```bash
