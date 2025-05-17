@@ -23,13 +23,15 @@ interface Restaurant {
   }>;
 }
 
+const API_BASE_URL = process.env.API_BASE_URL || "http://127.0.0.1:8000/api";
+
 export const useRestaurants = () => {
   const restaurants = ref<Restaurant[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
   const getPhotoUrl = (photoReference: string) => {
-    return `http://127.0.0.1:8000/api/photo?photo_reference=${photoReference}`;
+    return `${API_BASE_URL}/photo?photo_reference=${photoReference}`;
   };
 
   const fetchRestaurants = async (
@@ -41,7 +43,7 @@ export const useRestaurants = () => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/restaurants?keyword=${keyword}&address=${address}`
+        `${API_BASE_URL}/restaurants?keyword=${keyword}&address=${address}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch restaurants");
