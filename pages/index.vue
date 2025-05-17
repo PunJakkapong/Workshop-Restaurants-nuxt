@@ -144,7 +144,12 @@
   </div>
 
   <!-- Detail Panel -->
-  <DetailPanel v-model="showPanel" :show="showPanel" @close="closePanel">
+  <DetailPanel
+    v-model="showPanel"
+    :show="showPanel"
+    :place-id="selectedRestaurant?.place_id"
+    @close="closePanel"
+  >
     <!-- Panel content will be added here -->
   </DetailPanel>
 
