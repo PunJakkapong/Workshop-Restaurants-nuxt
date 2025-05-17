@@ -1,5 +1,6 @@
 import { ref } from "vue";
 
+// Use for data from API /restaurants
 export interface Restaurant {
   place_id: string;
   name: string;
@@ -28,6 +29,7 @@ export interface ApiResponse {
   next_page_token?: string;
 }
 
+// Use for data from API /restaurants/:place_id
 export interface RestaurantDetail {
   address_components: {
     long_name: string;
@@ -136,10 +138,12 @@ export interface RestaurantDetail {
   wheelchair_accessible_entrance: boolean;
 }
 
+// Interface for the response from the restaurant detail API endpoint
 export interface RestaurantDetailResponse {
   result: RestaurantDetail;
 }
 
+// Read api base url from .env file
 const API_BASE_URL = process.env.API_BASE_URL || "http://127.0.0.1:8000/api";
 
 // Debounce function
@@ -159,16 +163,18 @@ export const useRestaurants = () => {
   const hasMore = ref(true);
   const isFetching = ref(false);
 
+  // Get photo of restaurant by send photo_reference from API endpoint
   const getPhotoUrl = (photoReference: string) => {
     return `${API_BASE_URL}/photo?photo_reference=${photoReference}`;
   };
 
+  // Get list of restaurant, send keyword and address from API endpoint
   const fetchRestaurants = async (
     keyword: string = "",
     address: string = "",
     isLoadMore: boolean = false
   ) => {
-    // Prevent duplicate fetches
+    // Handle some time duplicate fetches
     if (isFetching.value) return;
     isFetching.value = true;
 
@@ -176,7 +182,7 @@ export const useRestaurants = () => {
       loading.value = true;
       error.value = null;
       restaurants.value = [];
-      nextPageToken.value = null;
+      nextPageToken.value = null; // Use for when need featch next page restaurant
       hasMore.value = true;
     }
 
@@ -184,7 +190,7 @@ export const useRestaurants = () => {
       const params = new URLSearchParams({
         keyword,
         address,
-        ...(nextPageToken.value && { next_page_token: nextPageToken.value }),
+        ...(nextPageToken.value && { next_page_token: nextPageToken.value }), // When it's first time search value is ""
       });
 
       const response = await fetch(
@@ -220,6 +226,7 @@ export const useRestaurants = () => {
     }
   }, 500); // 500ms delay
 
+  // Get next page list of restaurant, send keyword and address from API endpoint
   const fetchRestaurantDetail = async (
     placeId: string
   ): Promise<RestaurantDetail | null> => {

@@ -192,18 +192,22 @@ const {
   loadMore,
   getPhotoUrl,
 } = useRestaurants();
+
+// Default keyword set to "Bang sue"
 const searchKeyword = ref("Bang sue");
 const searchAddress = ref("");
 const showScrollTop = ref(false);
 const showPanel = ref(false);
 const selectedRestaurant = ref<Restaurant | null>(null);
 
+// Use for open DetailPanel
 const openPanel = (restaurant: Restaurant) => {
   selectedRestaurant.value = restaurant;
   showPanel.value = true;
   document.body.style.overflow = "hidden";
 };
 
+// Use for close DetailPanel
 const closePanel = () => {
   showPanel.value = false;
   setTimeout(() => {
@@ -220,6 +224,7 @@ const handleScroll = () => {
     const scrollPosition = window.innerHeight + window.scrollY;
     const threshold = document.documentElement.scrollHeight - 1000;
 
+    // If scroll postion is trigger point then need load data more
     if (scrollPosition >= threshold) {
       loadMore();
     }

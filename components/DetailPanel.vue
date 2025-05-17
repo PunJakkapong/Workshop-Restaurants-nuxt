@@ -225,9 +225,10 @@ import { useRestaurants } from "../composables/useRestaurants";
 const props = defineProps<{
   modelValue: boolean;
   show: boolean;
-  placeId?: string;
+  placeId?: string; // Google Places ID
 }>();
 
+// Define component events for v-model and panel closing
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
   (e: "close"): void;
@@ -243,6 +244,7 @@ const close = () => {
   emit("close");
 };
 
+// When click outside DetailPanel it will close
 const handleClickOutside = (event: MouseEvent) => {
   const target = event.target as HTMLElement;
   if (target.classList.contains("detail-panel")) {
