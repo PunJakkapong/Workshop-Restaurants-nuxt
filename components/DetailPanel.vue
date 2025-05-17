@@ -26,7 +26,12 @@
 
         <div v-else-if="restaurant" class="restaurant-detail">
           <!-- Header with Photo -->
-          <div class="restaurant-header">
+          <div
+            class="restaurant-header"
+            :class="{
+              'no-photo': !restaurant.photos || restaurant.photos.length === 0,
+            }"
+          >
             <div
               v-if="restaurant.photos && restaurant.photos.length > 0"
               class="restaurant-photo"
@@ -54,10 +59,15 @@
                 </span>
                 <div class="d-flex align-items-center">
                   <span class="text-warning me-1">★</span>
-                  <span class="fw-medium">{{ restaurant.rating }}</span>
-                  <span class="review-count ms-1"
-                    >({{ restaurant.user_ratings_total }})</span
-                  >
+                  <template v-if="restaurant.rating">
+                    <span class="fw-medium">{{ restaurant.rating }}</span>
+                    <span class="review-count ms-1"
+                      >({{ restaurant.user_ratings_total }})</span
+                    >
+                  </template>
+                  <template v-else>
+                    <span class="no-rating">No Rating</span>
+                  </template>
                 </div>
                 <div class="price-level">
                   <span
@@ -347,6 +357,14 @@ watchEffect(async () => {
 .restaurant-header {
   position: relative;
   margin: -60px -30px 0;
+  background: #f8f9fa;
+  border-radius: 20px 20px 0 0;
+}
+
+.restaurant-header.no-photo {
+  margin: 0;
+  padding: 30px;
+  background: white;
 }
 
 .restaurant-photo {
@@ -374,6 +392,39 @@ watchEffect(async () => {
     transparent
   );
   color: white;
+}
+
+.restaurant-header.no-photo .restaurant-info {
+  position: relative;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+.restaurant-header.no-photo .restaurant-name {
+  color: #212529;
+  text-shadow: none;
+}
+
+.restaurant-header.no-photo .address {
+  color: #6c757d;
+  text-shadow: none;
+}
+
+.restaurant-header.no-photo .review-count {
+  color: #6c757d;
+  text-shadow: none;
+  background: none;
+}
+
+.restaurant-header.no-photo .price-level {
+  color: #6c757d;
+  text-shadow: none;
+}
+
+.restaurant-header.no-photo .no-rating {
+  color: #6c757d;
+  text-shadow: none;
 }
 
 .restaurant-name {
@@ -497,6 +548,12 @@ watchEffect(async () => {
 .map-link i {
   font-size: 1rem;
   margin-right: 6px;
+}
+
+.no-rating {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 </style>
 
