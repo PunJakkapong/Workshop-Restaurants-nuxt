@@ -113,64 +113,11 @@
             :key="restaurant.place_id"
             class="col"
           >
-            <div class="card h-100 shadow-sm hover-shadow d-flex flex-column">
-              <!-- Restaurant Photo -->
-              <div
-                v-if="restaurant.photos && restaurant.photos.length > 0"
-                class="restaurant-photo"
-              >
-                <img
-                  :src="getPhotoUrl(restaurant.photos[0].photo_reference)"
-                  class="img-fluid w-100"
-                  :alt="restaurant.name"
-                />
-              </div>
-              <div
-                v-else
-                class="restaurant-photo bg-light d-flex align-items-center justify-content-center"
-              >
-                <span class="text-muted">No photo</span>
-              </div>
-
-              <!-- Restaurant Info -->
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title text-truncate">{{ restaurant.name }}</h5>
-                <p class="card-text text-muted small mb-3">
-                  {{ restaurant.formatted_address }}
-                </p>
-
-                <div class="mt-auto pt-3">
-                  <div class="d-flex align-items-center gap-3">
-                    <span
-                      :class="[
-                        'badge',
-                        restaurant.opening_hours?.open_now
-                          ? 'bg-success'
-                          : 'bg-danger',
-                      ]"
-                    >
-                      {{
-                        restaurant.opening_hours?.open_now
-                          ? "Open Now"
-                          : "Closed"
-                      }}
-                    </span>
-                    <div class="d-flex align-items-center">
-                      <template v-if="restaurant.rating">
-                        <span class="text-warning me-1">★</span>
-                        <span class="fw-medium">{{ restaurant.rating }}</span>
-                        <span class="text-muted small ms-1"
-                          >({{ restaurant.user_ratings_total }})</span
-                        >
-                      </template>
-                      <template v-else>
-                        <span class="text-muted small">No Rating</span>
-                      </template>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <RestaurantCard
+              :restaurant="restaurant"
+              :get-photo-url="getPhotoUrl"
+              @click="openPanel"
+            />
           </div>
         </div>
 
@@ -195,6 +142,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Detail Panel -->
+  <DetailPanel v-model="showPanel" :show="showPanel" @close="closePanel">
+    <!-- Panel content will be added here -->
+  </DetailPanel>
 
   <!-- Scroll to Top Button -->
   <button
@@ -222,6 +174,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRestaurants } from "../composables/useRestaurants";
+import type { Restaurant } from "../composables/useRestaurants";
+import RestaurantCard from "../components/RestaurantCard.vue";
+import DetailPanel from "../components/DetailPanel.vue";
 
 const {
   restaurants,
@@ -235,13 +190,21 @@ const {
 const searchKeyword = ref("Bang sue");
 const searchAddress = ref("");
 const showScrollTop = ref(false);
+const showPanel = ref(false);
+const selectedRestaurant = ref<Restaurant | null>(null);
 
-// Scroll to top functionality
-const scrollToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
+const openPanel = (restaurant: Restaurant) => {
+  selectedRestaurant.value = restaurant;
+  showPanel.value = true;
+  document.body.style.overflow = "hidden";
+};
+
+const closePanel = () => {
+  showPanel.value = false;
+  setTimeout(() => {
+    selectedRestaurant.value = null;
+    document.body.style.overflow = "";
+  }, 300);
 };
 
 const handleScroll = () => {
@@ -250,7 +213,7 @@ const handleScroll = () => {
   // Check if we need to load more restaurants
   if (hasMore.value && !loading.value) {
     const scrollPosition = window.innerHeight + window.scrollY;
-    const threshold = document.documentElement.scrollHeight - 1000; // Load more when 1000px from bottom
+    const threshold = document.documentElement.scrollHeight - 1000;
 
     if (scrollPosition >= threshold) {
       loadMore();
@@ -270,23 +233,26 @@ onUnmounted(() => {
 const handleSearch = () => {
   fetchRestaurants(searchKeyword.value, searchAddress.value);
 };
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
 </script>
 
 <style scoped>
-.hover-shadow:hover {
-  transform: translateY(-2px);
+.search-panel {
+  position: sticky;
+  top: 20px;
+  z-index: 1000;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.search-panel:hover {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  transition: all 0.2s ease-in-out;
-}
-
-.restaurant-photo {
-  height: 120px;
-  overflow: hidden;
-}
-
-.restaurant-photo img {
-  height: 100%;
-  object-fit: cover;
 }
 
 .btn-clear {
@@ -325,18 +291,6 @@ const handleSearch = () => {
 .search-btn:active {
   transform: translateY(0);
   box-shadow: none;
-}
-
-.search-panel {
-  position: sticky;
-  top: 20px;
-  z-index: 1000;
-  background: white;
-  transition: all 0.3s ease;
-}
-
-.search-panel:hover {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
 .scroll-top-btn {

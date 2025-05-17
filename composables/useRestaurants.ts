@@ -1,6 +1,6 @@
 import { ref } from "vue";
 
-interface Restaurant {
+export interface Restaurant {
   place_id: string;
   name: string;
   formatted_address: string;
@@ -23,7 +23,7 @@ interface Restaurant {
   }>;
 }
 
-interface ApiResponse {
+export interface ApiResponse {
   results: Restaurant[];
   next_page_token?: string;
 }
