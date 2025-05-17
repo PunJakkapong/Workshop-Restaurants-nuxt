@@ -1,3 +1,15 @@
+For run on workshop project
+```bash
+npm install
+```
+```bash
+npm run dev
+```
+Server start at
+```bash
+http://localhost:3000
+```
+
 # Nuxt Minimal Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
